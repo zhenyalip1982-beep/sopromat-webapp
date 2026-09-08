@@ -18,7 +18,7 @@
         #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
         .ui-container {
             position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 400px; background: rgba(18, 22, 31, 0.85);
+            width: 92%; max-width: 400px; background: rgba(18, 22, 31, 0.88);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-radius: 16px; padding: 16px; z-index: 10;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
@@ -55,17 +55,17 @@
             </select>
         </div>
         <div class="control-group">
-            <label>Нагрузка (P): <span id="load-value">100 кН</span></label>
-            <input type="range" id="load-range" min="10" max="200" value="100">
+            <label><span id="load-label">Сила (P):</span> <span id="load-value">50 кН</span></label>
+            <input type="range" id="load-range" min="10" max="200" step="10" value="50">
         </div>
         <div class="stats">
             <div class="stat-item">
-                <span>Макс. Прогиб (f)</span>
-                <strong id="deflection-val">15.00 мм</strong>
+                <span id="stat1-title">Макс. Прогиб (f)</span>
+                <strong id="stat1-val">0.00 мм</strong>
             </div>
             <div class="stat-item">
-                <span id="label-param">Мпрог (Mmax)</span>
-                <strong id="moment-val">150.0 кН·м</strong>
+                <span id="stat2-title">Мmax</span>
+                <strong id="stat2-val">0.0 кН·м</strong>
             </div>
         </div>
     </div>
