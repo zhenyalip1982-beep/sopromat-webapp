@@ -1,76 +1,76 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сопромат 3D Визуализатор</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #0f1115; 
-            color: #fff; 
-        }
-        #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-        .ui-container {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 420px; background: rgba(20, 24, 33, 0.85);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-radius: 18px; padding: 18px; z-index: 10;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
-        }
-        .control-group { margin-bottom: 14px; }
-        .control-group:last-child { margin-bottom: 0; }
-        .control-group label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: #94a3b8; }
-        .control-group label span { color: #38bdf8; font-weight: 600; }
-        select, input[type="range"] { width: 100%; box-sizing: border-box; }
-        select { 
-            background: #1e293b; color: #fff; border: 1px solid #334155; 
-            padding: 10px 12px; border-radius: 10px; font-size: 14px; outline: none; 
-            cursor: pointer; transition: border-color 0.2s;
-        }
-        select:focus { border-color: #38bdf8; }
-        input[type="range"] { 
-            -webkit-appearance: none; background: #334155; height: 6px; border-radius: 3px; outline: none; cursor: pointer; 
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #38bdf8; cursor: pointer;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-        .stats { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
-        .stat-item { text-align: center; flex: 1; }
-        .stat-item span { display: block; font-size: 11px; color: #64748b; margin-bottom: 2px; }
-        .stat-item strong { font-size: 14px; color: #f8fafc; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сопромат 3D Визуализатор</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #0f1115; 
+            color: #fff; 
+        }
+        #canvas-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+        .ui-container {
+            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 400px; background: rgba(18, 22, 31, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px; padding: 16px; z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
+        }
+        .control-group { margin-bottom: 12px; }
+        .control-group:last-child { margin-bottom: 0; }
+        .control-group label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; color: #94a3b8; }
+        .control-group label span { color: #38bdf8; font-weight: 600; }
+        select, input[type="range"] { width: 100%; box-sizing: border-box; }
+        select { 
+            background: #1e293b; color: #fff; border: 1px solid #334155; 
+            padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; 
+        }
+        input[type="range"] { 
+            -webkit-appearance: none; background: #334155; height: 6px; border-radius: 3px; outline: none; cursor: pointer; 
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #38bdf8; cursor: pointer;
+        }
+        .stats { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-item span { display: block; font-size: 11px; color: #64748b; margin-bottom: 2px; }
+        .stat-item strong { font-size: 14px; color: #f8fafc; }
+    </style>
 </head>
 <body>
-    <div id="canvas-container"></div>
-    <div class="ui-container">
-        <div class="control-group">
-            <label for="object-select">Тип расчета:</label>
-            <select id="object-select">
-                <option value="beam">Шарнирная балка (Изгиб)</option>
-                <option value="shaft">Круглый вал (Кручение)</option>
-            </select>
-        </div>
-        <div class="control-group">
-            <label>Нагрузка (P): <span id="load-value">100 кН</span></label>
-            <input type="range" id="load-range" min="10" max="200" value="100">
-        </div>
-        <div class="stats">
-            <div class="stat-item">
-                <span>Макс. Прогиб (f)</span>
-                <strong id="deflection-val">15.00 мм</strong>
-            </div>
-            <div class="stat-item">
-                <span id="label-param">Мпрог (Mmax)</span>
-                <strong id="moment-val">150.0 кН·м</strong>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="app.js"></script>
+    <div id="canvas-container"></div>
+    <div class="ui-container">
+        <div class="control-group">
+            <label for="object-select">Тип расчета:</label>
+            <select id="object-select">
+                <option value="beam">Шарнирная балка (Изгиб)</option>
+                <option value="shaft">Круглый вал (Кручение)</option>
+            </select>
+        </div>
+        <div class="control-group">
+            <label>Нагрузка (P): <span id="load-value">100 кН</span></label>
+            <input type="range" id="load-range" min="10" max="200" value="100">
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <span>Макс. Прогиб (f)</span>
+                <strong id="deflection-val">15.00 мм</strong>
+            </div>
+            <div class="stat-item">
+                <span id="label-param">Мпрог (Mmax)</span>
+                <strong id="moment-val">150.0 кН·м</strong>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
